@@ -1,0 +1,220 @@
+================================================================================
+                       COMPILER DESIGN LAB - EXPERIMENTS CODE
+================================================================================
+
+--------------------------------------------------------------------------------
+Experiment 1: DFA Simulator
+--------------------------------------------------------------------------------
+1. Start
+2. Read the total number of states, input symbols, transition table, and final states
+3. Input the string to be validated and set current_state = 0
+4. For each character in the string:
+   4.1. If the character matches an input symbol, update current_state using the transition table
+   4.2. Else, print "Invalid input symbol" and terminate
+5. For each state in the final states array:
+   5.1. If current_state matches a final state, print "String Accepted"
+   5.2. Else, print "String Rejected"
+6. Loop if the user chooses to continue
+7. Stop
+
+--------------------------------------------------------------------------------
+Experiment 2: Comment Eliminator
+--------------------------------------------------------------------------------
+1. Start
+2. Open the source file for reading and the output file for writing
+3. While not EOF, read character ch:
+   3.1. If ch is a whitespace or newline, skip it
+   3.2. If ch is '/':
+        3.2.1. Read the next character ch1
+        3.2.2. If ch1 is '/', skip characters until a newline is found
+        3.2.3. If ch1 is '*', skip characters until '*/' is found
+   3.3. Else, write ch to the output file
+4. Close both files
+5. Stop
+
+--------------------------------------------------------------------------------
+Experiment 3: Lexical Analyzer
+--------------------------------------------------------------------------------
+1. Start
+2. Open input and output files
+3. While not EOF, read character ch:
+   3.1. Skip spaces/tabs and increment line count on newlines
+   3.2. If ch is a bracket, operator, or semicolon, print its token type
+   3.3. If ch is a relational operator ('<', '>', '!', '='), check the next character for '=' to classify as compound or single
+   3.4. If ch is a digit, loop to extract the full number (set a flag if a decimal is found for floats)
+   3.5. If ch is an alphabet, loop to extract the word; check against the keyword array to classify as "keyword" or "identifier"
+4. Close files
+5. Stop
+
+--------------------------------------------------------------------------------
+Experiment 4: Recursive Descent Parser
+--------------------------------------------------------------------------------
+1. Start
+2. Set error = 0
+3. Read the input string and call the starting function E()
+4. Inside E():
+   4.1. Call T()
+   4.2. Call X()
+5. Inside T():
+   5.1. If current character is 'a', advance pointer
+   5.2. Else, set error = 1
+6. Inside X():
+   6.1. If current character is '+', advance pointer, call T(), then call X()
+7. If the string is fully consumed and error == 0, print "Accepted", else print "Rejected"
+8. Stop
+
+--------------------------------------------------------------------------------
+Experiment 5: Operator Precedence Parser
+--------------------------------------------------------------------------------
+1. Start
+2. Read terminals and precedence matrix
+3. Push '$' to stack and append '$' to input string
+4. While true:
+   4.1. If stack is ['$', 'E'] and input is '$', print "Accept" and break
+   4.2. Get precedence relation between stack top and input
+   4.3. If relation is '<' or '=': shift input onto stack
+   4.4. If relation is '>':
+        4.4.1. Trace down the stack to find the nearest '<' boundary
+        4.4.2. Extract and validate the handle ("i" or "E+E" type)
+        4.4.3. Reduce by replacing the handle with 'E'
+5. Stop
+
+--------------------------------------------------------------------------------
+Experiment 6: Parentheses Checker
+--------------------------------------------------------------------------------
+1. Start
+2. Set error = 0
+3. While reading file characters:
+   3.1. If character is an opening bracket, push to stack with line number
+   3.2. If character is a closing bracket:
+        3.2.1. If stack is empty, set error = 1 (missing left bracket)
+        3.2.2. Else, pop stack. If brackets mismatch, set error = 1
+4. While stack is not empty, pop and set error = 1 (missing right bracket)
+5. If error == 0, print "Balanced"
+6. Stop
+
+--------------------------------------------------------------------------------
+Experiment 7: For Loop Syntax Checker
+--------------------------------------------------------------------------------
+1. Start
+2. While reading lines from file:
+   2.1. Search for the standalone keyword "for"
+   2.2. If found, verify it is followed by '('
+   2.3. Scan inside parentheses:
+        2.3.1. Track nested brackets
+        2.3.2. Count semicolons
+   2.4. If closing ')' is missing or semicolon count is not exactly 2, print syntax error
+3. Stop
+
+--------------------------------------------------------------------------------
+Experiment 8: Shift Reduce Parser
+--------------------------------------------------------------------------------
+1. Start
+2. Read input string (ending in '$')
+3. While true:
+   3.1. If stack is 'E' and input is '$', Accept and break
+   3.2. If stack ends in a valid handle ('i', 'E+E', 'E*E', '(E)'):
+        3.2.1. Pop the handle, push 'E', and print "Reduce"
+   3.3. Else if input is not '$':
+        3.3.1. Shift input character to stack and print "Shift"
+   3.4. Else, print "Error" and break
+4. Stop
+
+--------------------------------------------------------------------------------
+Experiment 9: Lex - Token Recognition
+--------------------------------------------------------------------------------
+1. Start
+2. Define regex patterns for keywords, identifiers, numbers, and operators
+3. On match:
+   3.1. Print token classification and line number
+4. Define rule to increment line count on newlines and ignore spaces
+5. Execute yylex() on input file
+6. Stop
+
+--------------------------------------------------------------------------------
+Experiment 10: Lex - Simple Calculator
+--------------------------------------------------------------------------------
+1. Start
+2. Initialize flag = 0
+3. On matching a number:
+   3.1. If flag == 0, store as num1
+   3.2. Else, store as num2, perform calculation based on flag (+, -, *, /), and save result to num1
+4. On matching an operator: update flag (1 for +, 2 for -, etc.)
+5. On newline: print result
+6. Execute yylex()
+7. Stop
+
+--------------------------------------------------------------------------------
+Experiment 11: Lex - Comment Removal
+--------------------------------------------------------------------------------
+1. Start
+2. Initialize flag = 0
+3. On match:
+   3.1. "/*": set flag = 1
+   3.2. "*/": set flag = 0
+   3.3. "//": set flag = 2
+   3.4. "\n": if flag == 2, set flag = 0
+   3.5. Any other character: write to output if flag == 0
+4. Execute yylex()
+5. Stop
+
+--------------------------------------------------------------------------------
+Experiment 12: YACC - Valid Arithmetic Expression
+--------------------------------------------------------------------------------
+1. Start
+2. Define grammar rules (S -> E, E -> E+T, T -> T*F, F -> NUMBER) and C calculation actions
+3. Inside yylex():
+   3.1. Skip whitespaces
+   3.2. Compute integer values for digits and return NUMBER
+   3.3. Return other characters directly
+4. Execute yyparse() and print valid result or error
+5. Stop
+
+--------------------------------------------------------------------------------
+Experiment 13: YACC - Calculator with Math Functions
+--------------------------------------------------------------------------------
+1. Start
+2. Define token types (double) and operator precedence (left/right)
+3. Define grammar mapping operations to C functions (+, -, *, /, pow, unary minus)
+4. Add division-by-zero validation to abort parsing
+5. Inside yylex(), capture floats and return NUMBER
+6. Execute yyparse()
+7. Stop
+
+--------------------------------------------------------------------------------
+Experiment 14: YACC - Valid Identifier
+--------------------------------------------------------------------------------
+1. Start
+2. Define tokens LETTER and DIGIT
+3. Define grammar ensuring identifiers start with a LETTER followed by mixed letters/digits
+4. Inside yylex(), classify characters using isalpha() and isdigit()
+5. Execute yyparse(); print "Valid" if newline is reached
+6. Stop
+
+--------------------------------------------------------------------------------
+Experiment 15: Intermediate Code Gen (TAC, Quadruple, Triple)
+--------------------------------------------------------------------------------
+1. Start
+2. Read infix expression and convert to postfix using a stack
+3. For each character in postfix:
+   3.1. If operand, push to stack
+   3.2. If operator, pop two operands, generate temporary variable, print operation, and push temp back
+4. Re-iterate postfix logic to format and print Quadruples (Op, Arg1, Arg2, Result)
+5. Re-iterate postfix logic to format and print Triples (Op, Arg1, Arg2) using instruction indices instead of temp variables
+6. Stop
+
+--------------------------------------------------------------------------------
+Experiment 16: Target Code Gen (Assembly)
+--------------------------------------------------------------------------------
+1. Start
+2. Read infix expression and starting memory address
+3. Convert infix to postfix
+4. For each character in postfix:
+   4.1. If operand: print MOV A, char and PUSH A
+   4.2. If operator:
+        4.2.1. Print POP B and POP A
+        4.2.2. Print corresponding ALU op (ADD, SUB, MUL, DIV)
+        4.2.3. Print PUSH A
+5. Print final POP A and HLT
+6. Stop
+================================================================================
